@@ -1,6 +1,8 @@
 import bs4
 import argparse
 import re
+import arango
+import networkx
 
 class Version():
     def __init__(self, version):
@@ -32,36 +34,36 @@ class Version():
 class Course():
     noPattern  = re.compile(r'[A-Z]*(6.[A-Z]*[0-9]*)[A-Z]*')
     namePattern = re.compile(r'^([a-zA-Z0-9_:,\+\-\./ ]*)\s*\((.*)\)')
-    def __init__(self, courseNo, courseName, courseLink=None):
+    def __init__(self, courseNo, courseName, courseLink=None, prerequisite=None):
         self.courseNo = Course.noPattern.match(courseNo).group(1)
         match = Course.namePattern.search(courseName)
         self.courseName = match.group(1)
         self.courseLink = courseLink
-        self.version = Version(match.group(2)) 
+        self.version = Version(match.group(2))
+        self.prerequisite = prerequisite
     def __str__(self):
         return "course no: {0}, course title: {1}, version: {2}".format(self.courseNo, self.courseName, self.version)
         
 
-with open('course.html', encoding='utf8') as fd:
-    soup = bs4.BeautifulSoup(fd, 'html5lib')
+def get_wishlist(addr="127.0.0.1:8529"):
+    pass
 
+def get_courses(file):
+    with open('course.html', encoding='utf8') as fd:
+        soup = bs4.BeautifulSoup(fd, 'html5lib')
+    tag : bs4.Tag = soup.find(class_="courseListRow")
+    courseDict = {}
 
+    while True:
+        if tag == None:
+            break
+        courseNumCol : bs4.Tag = tag.find(class_="courseNumCol")
+        courseNum = courseNumCol.find("a")
+        courseTitleCol : bs4.Tag = tag.find(class_="courseTitleCol")
+        courseTitle = courseTitleCol.find("a")
+        course = Course(courseNo=courseNum.get_text(strip=True), courseName=courseTitle.get_text(strip=True))
+        print(course)
+        tag = tag.find_next_sibling(class_="courseListRow")
 
-
-tag : bs4.Tag = soup.find(class_="courseListRow")
-courseDict = {}
-while True:
-    if tag == None:
-        break
-    courseNumCol : bs4.Tag = tag.find(class_="courseNumCol")
-    courseNum = courseNumCol.find("a")
-    courseTitleCol : bs4.Tag = tag.find(class_="courseTitleCol")
-    courseTitle = courseTitleCol.find("a")
-    course = Course(courseNo=courseNum.get_text(strip=True), courseName=courseTitle.get_text(strip=True))
-    print(course)
-    tag = tag.find_next_sibling(class_="courseListRow")
-    if not course. in courseDict:
-
-    
-
-    
+if __name__ == "__main__":
+    pass
