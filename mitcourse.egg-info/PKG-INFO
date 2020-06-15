@@ -1,0 +1,14 @@
+Metadata-Version: 1.2
+Name: mitcourse
+Version: 0.0.1
+Summary: mitcourse course graph
+Home-page: UNKNOWN
+Author: xmac
+Author-email: 1743164928xmac93@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Aproved :: GPLv3 LICENSE
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.4

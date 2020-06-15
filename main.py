@@ -2,7 +2,6 @@ import bs4
 import argparse
 import re
 import arango
-import networkx
 
 class Version():
     def __init__(self, version):
@@ -66,4 +65,4 @@ def get_courses(file):
         tag = tag.find_next_sibling(class_="courseListRow")
 
 if __name__ == "__main__":
-    pass
+    get_courses("")

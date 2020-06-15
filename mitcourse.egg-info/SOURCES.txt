@@ -1,0 +1,5 @@
+setup.py
+mitcourse.egg-info/PKG-INFO
+mitcourse.egg-info/SOURCES.txt
+mitcourse.egg-info/dependency_links.txt
+mitcourse.egg-info/top_level.txt
