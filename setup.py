@@ -6,10 +6,10 @@ setuptools.setup(
     author='xmac',
     author_email='1743164928xmac93@gmail.com',
     description='mitcourse course graph',
-    package=setuptools.find_packages(),
+    packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Aproved :: GPLv3 LICENSE",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.4",

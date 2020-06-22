@@ -1,4 +1,6 @@
 setup.py
+coursegraph/__init__.py
+coursegraph/main.py
 mitcourse.egg-info/PKG-INFO
 mitcourse.egg-info/SOURCES.txt
 mitcourse.egg-info/dependency_links.txt
