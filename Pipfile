@@ -11,6 +11,7 @@ requests = "*"
 python-arango = "*"
 bs4 = "*"
 argparse = "*"
+html5lib = "*"
 
 [requires]
 python_version = "3.8"

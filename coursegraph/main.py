@@ -1,34 +1,40 @@
 import bs4
 import argparse
 import re
-import arango 
+import arango
+from functools import total_ordering
 
+@total_ordering
 class Version():
     def __init__(self, version):
-        self.value = version
+        s = version.split(' ')
+        self._value = version
+        length = len(s)
+        self._semester = None
+        self._year = None
+        if length == 2:
+            self._semester = s[0]
+            self._year = s[1]
+        elif length == 3:
+            self._semester = s[0]
+            self._year = s[2]
+    
+    @property
+    def value(self):
+        return self._value
+    @property
+    def semester(self):
+        return self._semester
+    @property
+    def year(self):
+        return self._year
     def __eq__(self, other):
         return self.value == other.value
     def __gt__(self, other):
-        sv = self.value.split(' ')[-1]
-        ov = other.value.split(' ')[-1]
-        return sv > ov
-    def __ge__(self, other):
-        sv = self.value.split(' ')[-1]
-        ov = other.value.split(' ')[-1]
-        return sv >= ov
-    def __lt__(self, other):
-        sv = self.value.split(' ')[-1]
-        ov = other.value.split(' ')[-1]
-        return sv < ov
-    def __le__(self, other):
-        sv = self.value.split(' ')[-1]
-        ov = other.value.split(' ')[-1]
-        return sv <= ov
+        return self.year > other.year
     def __str__(self):
-        return self.value.split(' ')[-1]
-    @property
-    def version(self):
-        return int(self.value.split(' ')[-1])
+        return "{0.value!s}".format(self)
+
 
 class Course():
     noPattern  = re.compile(r'[A-Z]*(6.[A-Z]*[0-9]*)[A-Z]*')
@@ -45,7 +51,27 @@ class Course():
         
 
 def get_wishlist(addr="127.0.0.1:8529"):
-    pass
+    client = arango.ArangoClient()
+    sys_db = client.db(name='_system', username='root', password='Master@2020')
+    if not sys_db.has_database('mit'):
+        sys_db.create_database('mit')
+    course = sys_db.collection('course')
+    mit_db = client.db(name='mit', username='root', password='Master@2020')
+
+    if mit_db.has_collection('mit_course'):
+        mit_course = mit_db.collection('mit_course')
+    else:
+        mit_course = mit_db.create_collection('mit_course')
+
+    d = get_courses('coursegraph/course.html')
+    for key in course.keys():
+        doc = d.get(key, None)
+        if not doc is None:
+            mit_course.insert({
+                '_id': doc.courseNo,
+                'name': doc.courseName,
+                'version': doc.version.value,
+            })
 
 def get_courses(file):
     with open(file, encoding='utf8') as fd:
@@ -61,8 +87,14 @@ def get_courses(file):
         courseTitleCol : bs4.Tag = tag.find(class_="courseTitleCol")
         courseTitle = courseTitleCol.find("a")
         course = Course(courseNo=courseNum.get_text(strip=True), courseName=courseTitle.get_text(strip=True))
-        print(course)
+        if not course.courseNo in courseDict:
+            courseDict[course.courseNo] = course
+        else:
+            if course.version > courseDict[course.courseNo].version:
+                courseDict[course.courseNo] = course
         tag = tag.find_next_sibling(class_="courseListRow")
+    
+    return courseDict
 
 if __name__ == "__main__":
-    get_courses("./coursegraph/course.html")
+    get_wishlist()
