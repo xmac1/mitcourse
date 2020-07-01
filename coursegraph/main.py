@@ -48,7 +48,7 @@ def get_wishlist(addr="127.0.0.1:8529"):
     pass
 
 def get_courses(file):
-    with open('course.html', encoding='utf8') as fd:
+    with open(file, encoding='utf8') as fd:
         soup = bs4.BeautifulSoup(fd, 'html5lib')
     tag : bs4.Tag = soup.find(class_="courseListRow")
     courseDict = {}
@@ -65,4 +65,4 @@ def get_courses(file):
         tag = tag.find_next_sibling(class_="courseListRow")
 
 if __name__ == "__main__":
-    print("hello world")
+    get_courses("./coursegraph/course.html")
